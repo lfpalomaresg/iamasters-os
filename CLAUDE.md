@@ -232,6 +232,24 @@ Viven en `skills-library/` (cero coste de contexto hasta instalarlas). Instalar:
 |---|---|
 | `tool-visual-explainer` | HTML autocontenido compartible |
 
+### Skills del operador (este fork)
+
+Skills propias de Luisfran. Las 4 primeras viven en `.claude/skills/` pero están
+gitignored a propósito (canónicas en Drive/BIBLIOTECA); las 5 de biblioteca sí se
+versionan aquí como catálogo propio.
+
+| Skill | Descripción |
+|---|---|
+| `careo` | Revisión adversarial multi-modelo (Claude+Codex+Gemini) con triaje por radio de daño |
+| `conclave` | Metodología multi-agente con gate adversarial pre-commit (doble OK) |
+| `strategy-mvp-up` | Auditoría de producto en 10 dimensiones con agentes paralelos |
+| `ingesta-conocimiento` | Captura conocimiento desde URLs a markdown ES con índice |
+| `contenido-social` | De fuente (URL/PDF/audio) a pieza publicada en redes |
+| `consultor-ia-ventas` | Consultor conversacional IA para cualificar clientes |
+| `skill-antibloqueo` | Detecta patrones de bloqueo y propone acción inmediata |
+| `skill-creator-pro` | Convierte procesos/transcripciones en skills instalables |
+| `web-express` | De idea a web publicada en Vercel en <30 min |
+
 ### Plugins Anthropic (instalación vía marketplace)
 
 | Skill | Cómo activar |
