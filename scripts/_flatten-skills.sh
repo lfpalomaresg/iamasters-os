@@ -54,9 +54,15 @@ while IFS= read -r nested; do
         # El destino plano ya existe (normalmente lo acaba de traer el update).
         # Rescatar la personalización del operador antes de archivar la anidada.
         if [ -f "$nested/SKILL.local.md" ] && [ ! -f "$dest/SKILL.local.md" ]; then
-            cp "$nested/SKILL.local.md" "$dest/SKILL.local.md"
-            RESCUED=$((RESCUED+1))
-            say "${CYAN}  -> $name: SKILL.local.md rescatado a la ruta nueva${NC}"
+            if cp "$nested/SKILL.local.md" "$dest/SKILL.local.md"; then
+                RESCUED=$((RESCUED+1))
+                say "${CYAN}  -> $name: SKILL.local.md rescatado a la ruta nueva${NC}"
+            else
+                # Si el rescate falla, NO se archiva la anidada: la personalización
+                # activa del operador se quedaría solo en el archivo, en silencio.
+                say "${YELLOW}  ! $name: no pude rescatar SKILL.local.md — dejo la copia anidada sin archivar${NC}"
+                continue
+            fi
         fi
         mkdir -p "$ARCHIVE_DIR"
         mv "$nested" "$ARCHIVE_DIR/${name}-anidada-$STAMP"

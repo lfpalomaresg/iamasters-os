@@ -111,6 +111,14 @@ yarn.lock
 
 # Personalizaciones del operador sobre skills curadas — sobreviven updates
 **/SKILL.local.md
+.conclave/
+
+# Skills propias del operador copiadas al repo (canonical en Drive/BIBLIOTECA) — no versionar aquí
+# (rutas planas desde el flatten v0.11.0)
+.claude/skills/careo/
+.claude/skills/conclave/
+.claude/skills/strategy-mvp-up/
+.claude/skills/ingesta-conocimiento/
 
 # Commit upstream ya aplicado por scripts/update.sh (estado local)
 .claude/.upstream-state

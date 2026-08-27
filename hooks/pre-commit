@@ -22,7 +22,9 @@ STAGED="$(git diff --cached --name-only --diff-filter=d --no-renames)"
 # acaba enseñando a usar --no-verify, que es lo peor que le puede pasar a un
 # guardarraíl. Requiere asignación ([:=]) tras la palabra clave y descarta los
 # placeholders de documentación (..., xxxxx, <TU_CLAVE>, $VAR, your-key, vacío).
-PLACEHOLDER='[:=][[:space:]]*[^[:space:]"]{0,24}([.]{3}|[xX]{3,}|<|[$]|[{]|[[]|tu[-_]|TU[-_]|[Yy]our|YOUR|[Ee]xample|EXAMPLE|changeme|CHANGEME|placeholder|dummy|fake|redacted|REDACTED|aqui|AQUI)'
+# La comilla inicial es opcional: sin ella, API_KEY="dummy" o ='<TU_CLAVE>' no
+# casaban con el descarte y bloqueaban como falso positivo.
+PLACEHOLDER='[:=][[:space:]]*["'\'']?[^[:space:]"'\'']{0,24}([.]{3}|[xX]{3,}|<|[$]|[{]|[[]|tu[-_]|TU[-_]|[Yy]our|YOUR|[Ee]xample|EXAMPLE|changeme|CHANGEME|placeholder|dummy|fake|redacted|REDACTED|aqui|AQUI)'
 LEAK="$(git diff --cached -U0 --diff-filter=d \
   | grep -E '^\+' | grep -vE '^\+\+\+' \
   | grep -IE '(API_KEY|APIKEY|SECRET|PASSWORD|PRIVATE_KEY|ACCESS_TOKEN|AUTH_TOKEN)[[:space:]]*[:=]' \

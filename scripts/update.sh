@@ -268,6 +268,7 @@ echo -e "${BLUE}[6/6]${NC} Aplicando updates..."
 
 # Apply safe updates (sin pisar archivos con cambios locales sin commitear)
 PENDING_CONFLICTS=()
+APPLY_FAILED=()
 UPDATED=0
 RESPECTED_ARCHIVED=()
 for file in "${SAFE_TO_UPDATE[@]}" "${SKILLS_NEW[@]}"; do
@@ -282,9 +283,20 @@ for file in "${SAFE_TO_UPDATE[@]}" "${SKILLS_NEW[@]}"; do
         PENDING_CONFLICTS+=("$file")
         continue
     fi
-    git checkout "origin/$CURRENT_BRANCH" -- "$file" 2>/dev/null || true
-    UPDATED=$((UPDATED+1))
+    # Un checkout que falla (permisos, disco, índice bloqueado) NO cuenta como
+    # aplicado: si se contara, el estado de upstream avanzaría y el archivo
+    # quedaría desactualizado para siempre con el updater informando éxito.
+    if git checkout "origin/$CURRENT_BRANCH" -- "$file" 2>/dev/null; then
+        UPDATED=$((UPDATED+1))
+    else
+        APPLY_FAILED+=("$file")
+    fi
 done
+
+if [ ${#APPLY_FAILED[@]} -gt 0 ]; then
+    echo -e "  ${RED}!${NC} ${#APPLY_FAILED[@]} archivo(s) NO se pudieron traer (se reintentarán en el próximo /actualiza):"
+    for f in "${APPLY_FAILED[@]}"; do echo -e "    ${RED}·${NC} $f"; done
+fi
 
 if [ ${#RESPECTED_ARCHIVED[@]} -gt 0 ]; then
     ARCHIVED_NAMES=$(printf '%s\n' "${RESPECTED_ARCHIVED[@]}" | sed 's|^.claude/skills/||; s|/.*||' | sort -u | tr '\n' ' ')
@@ -400,9 +412,13 @@ fi
 # durante este update y bash seguiría ejecutando la versión antigua ya cargada,
 # así que una migración escrita aquí dentro no correría hasta el update siguiente.
 # Con `bash <script>` se ejecuta la versión recién descargada.
+FLATTEN_FAILED=0
 if [ -f "$REPO_ROOT/scripts/_flatten-skills.sh" ]; then
     echo -e "${BLUE}[+]${NC} Verificando estructura de skills (Claude Code solo indexa un nivel)..."
-    bash "$REPO_ROOT/scripts/_flatten-skills.sh" || true
+    if ! bash "$REPO_ROOT/scripts/_flatten-skills.sh"; then
+        FLATTEN_FAILED=1
+        echo -e "  ${RED}!${NC} La migración de estructura no terminó limpia · el próximo /actualiza la reintentará"
+    fi
 fi
 
 # ── Sync skills instaladas desde la biblioteca ──
@@ -428,8 +444,17 @@ fi
 # ── Registrar qué commit upstream se ha aplicado ─────────────────────────────
 # Sin esto, el próximo /actualiza volvería a medir contra HEAD (que no se mueve)
 # y reportaría como conflicto todo lo que acaba de traer.
-mkdir -p "$REPO_ROOT/.claude"
-printf '%s\n' "$REMOTE" > "$UPSTREAM_STATE"
+# SOLO se avanza la base si TODO quedó aplicado: con conflictos pendientes,
+# checkouts fallidos o migración parcial, avanzar el estado haría que el próximo
+# /actualiza dijera "Ya estás al día" y esos cambios upstream no se volvieran a
+# ofrecer nunca (se perderían en silencio).
+if [ ${#PENDING_CONFLICTS[@]} -eq 0 ] && [ ${#APPLY_FAILED[@]} -eq 0 ] && [ "$FLATTEN_FAILED" -eq 0 ]; then
+    mkdir -p "$REPO_ROOT/.claude"
+    printf '%s\n' "$REMOTE" > "$UPSTREAM_STATE"
+else
+    echo -e "  ${YELLOW}!${NC} Quedan pendientes (conflictos/fallos) · la base upstream NO se avanza:"
+    echo -e "    el próximo /actualiza volverá a ofrecer estos cambios."
+fi
 
 # ── Done ──
 echo

@@ -84,34 +84,12 @@ Skills on Demand — actualizar la sección correspondiente de MEMORY.md.
 
 NO reescribir todo MEMORY.md. Solo añadir o actualizar las secciones afectadas.
 
-## 3.8 Git status de los repos de código tocados en la sesión
-
-**Nunca dejar que se acumulen días de commits sin avisar** (pasó con AI_OS, hasta 2026-08-05 sin
-commit varias sesiones seguidas). Para CADA repo con `.git` que se haya tocado en esta sesión:
-
-1. `git status --short` en ese repo.
-2. Si está limpio, anotar "✅ sin cambios pendientes" para el resumen del paso 4 — no omitir la
-   línea aunque no haya nada, la ausencia de aviso no debe confundirse con "no lo comprobé".
-3. Si hay cambios sin commitear:
-   - Si el repo tiene el gate `conclave` instalado (`.git/hooks/pre-commit` lo referencia, o
-     existe `.conclave/`) y los cambios tocan código (no solo `.md`), el commit directo lo
-     bloqueará. **No forzarlo.** Reportar los archivos pendientes y ofrecer explícitamente:
-     "¿Corro conclave/careo ahora para cerrarlo, o lo dejamos para la próxima sesión?" — nunca
-     lanzar un conclave completo sin que el operador lo pida (multi-agente, coste real).
-   - **Ojo con "es solo documentación":** la excepción del gate cubre commits compuestos
-     EXCLUSIVAMENTE por `*.md`. Un `.gitignore`, un JSON o un YAML **también lo bloquean**, aunque
-     no lleven lógica. Así que: si el commit es solo Markdown, proponer commit directo (mensaje
-     conventional) con el mismo criterio de aprobación explícita que ya aplica al AI_OS en el paso
-     ## 3.6 de más arriba. Si entra cualquier fichero que no sea `.md`, hace falta el sello de
-     conclave o un override autorizado — **nunca commitear código sin ese OK.**
-
 ## 4. Confirmar al usuario
 
 Mostrar un resumen breve:
 ```
 📋 Sesión documentada en: [path al archivo]
 📝 MEMORY.md: [actualizado / sin cambios]
-🗂️ Repos de código: [una línea por repo tocado — commiteado / pendiente (con motivo) / limpio]
 🔜 Próxima sesión: [1-2 líneas de lo más urgente pendiente]
 ```
 
