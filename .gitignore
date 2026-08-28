@@ -65,6 +65,55 @@ projects/*/
 !projects/_showcase/
 !projects/_showcase/**
 
+# Excepción: diario de decisiones de Capa 2 (FR-053) — texto estructurado sin
+# PII ni datos internos de Soho, validado por capa2_decisions antes de entrar.
+# El resto de projects/briefs/capa2-ia-hoteles (borradores, imágenes, vídeo) y
+# el resto de projects/briefs/* (otros briefs) siguen privados y gitignored.
+# `projects/briefs/` en sí debe des-ignorarse primero (git no desciende a un
+# directorio ya excluido solo porque un hijo suyo tenga un patrón "!"), y
+# volver a ignorar todo lo que cuelga de él salvo capa2-ia-hoteles.
+!projects/briefs/
+projects/briefs/*
+!projects/briefs/.gitkeep
+!projects/briefs/capa2-ia-hoteles/
+projects/briefs/capa2-ia-hoteles/*
+!projects/briefs/capa2-ia-hoteles/knowledge/
+projects/briefs/capa2-ia-hoteles/knowledge/*
+!projects/briefs/capa2-ia-hoteles/knowledge/decisions/
+projects/briefs/capa2-ia-hoteles/knowledge/decisions/**
+!projects/briefs/capa2-ia-hoteles/knowledge/decisions/**/
+!projects/briefs/capa2-ia-hoteles/knowledge/decisions/**/*.md
+!projects/briefs/capa2-ia-hoteles/.capa2/
+projects/briefs/capa2-ia-hoteles/.capa2/*
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/*
+# Excepciones por extensión (hallazgo careo ronda 1, punto 6): cada carpeta
+# sensible solo des-ignora la extensión que de verdad necesita, no "todo lo
+# que haya dentro" — un binario/imagen colado ahí sigue ignorado.
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/decisions/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/decisions/**
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/decisions/**/
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/decisions/**/*.json
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/closures/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/closures/**
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/closures/**/
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/closures/**/*.json
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/capa2_decisions/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/capa2_decisions/**
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/capa2_decisions/**/
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/capa2_decisions/**/*.py
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/tests/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/tests/**
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/tests/**/
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/tests/**/*.py
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/tests/**/*.md
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/*.md
+!projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/*.sh
+# derived/ es regenerable (status.json, STATUS.md) — nunca se commitea.
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/derived/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/**/__pycache__/
+projects/briefs/capa2-ia-hoteles/.capa2/decision-journal/**/*.pyc
+
 # Loops del operador (privados)
 loops/*
 !loops/README.md
