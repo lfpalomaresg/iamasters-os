@@ -19,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import types
+from datetime import UTC, datetime, timedelta
 import unittest
 from hashlib import sha256
 from pathlib import Path
@@ -278,12 +279,19 @@ class BuildStatusTests(unittest.TestCase):
         self.assertEqual(first.to_markdown(), second.to_markdown())
 
     def test_closed_decisions_and_timeliness(self):
-        # review_on close to "today" so closing it today lands within the
-        # review_on + 7 days grace window used for the timeliness metric.
-        self._add("D-001", "2026-08-25")
+        # journal.close() stamps closed_at with the real wall clock (UTC now),
+        # not a value this test controls, so review_on/as_of must be computed
+        # relative to "today" rather than hardcoded — a fixed past date drifts
+        # out of the review_on+7d grace window as soon as more than a few days
+        # pass (careo finding, 2026-09-07: this test broke silently on CI once
+        # "today" moved past the hardcoded 2026-09-01 deadline).
+        today = datetime.now(UTC).date()
+        review_on = today.isoformat()
+        as_of = (today + timedelta(days=3)).isoformat()
+        self._add("D-001", review_on)
         journal = self.project.journal()
         journal.close("D-001", actual_outcome="Resultado observado de prueba.", review_decision="ADOPT")
-        view = views.build_status(self.project.root, STORE_PATH, as_of="2026-08-28")
+        view = views.build_status(self.project.root, STORE_PATH, as_of=as_of)
         self.assertEqual(view.counts["closed_total"], 1)
         self.assertEqual(view.counts["adopt"], 1)
         self.assertEqual(view.review_timeliness["evaluated_total"], 1)
