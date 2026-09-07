@@ -171,3 +171,7 @@ yarn.lock
 
 # Commit upstream ya aplicado por scripts/update.sh (estado local)
 .claude/.upstream-state
+
+# Worktrees de agentes: checkouts locales/transitorios, nunca contenido versionable
+# (mismo patrón aplicado ya en otros repos propios tras perderse en un squash-merge)
+.claude/worktrees/
