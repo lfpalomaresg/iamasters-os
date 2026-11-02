@@ -175,3 +175,6 @@ yarn.lock
 # Worktrees de agentes: checkouts locales/transitorios, nunca contenido versionable
 # (mismo patrón aplicado ya en otros repos propios tras perderse en un squash-merge)
 .claude/worktrees/
+
+# Resúmenes diarios de Sinapsis: llevan nombres de clientes y datos de Soho; el fork es PÚBLICO (2026-11-02)
+synapsis/daily-summaries/
